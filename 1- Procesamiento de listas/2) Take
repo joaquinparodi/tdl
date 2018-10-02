@@ -1,0 +1,13 @@
+fun {Take Xs N}
+   if N == 0 then
+	    nil
+   else
+      case Xs of H|T then
+	      if {Length Xs} < N then
+	        Xs
+	      else
+	        H|{Take T N-1}
+	      end
+      end
+   end
+end
