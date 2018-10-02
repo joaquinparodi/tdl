@@ -1,15 +1,7 @@
-local Largo L R in
-   proc{Largo L R}
-      case L of H|T then
-	 local U in
-	    {Largo T U}
-	    R = 1 + U
-	 end
+fun {Length Xs}
+      case Xs of H|T then
+	 1 + {Length T}
       else
-	 R = 0
+	 0
       end
    end
-   L = [10 20 30 40 50 60]
-   {Largo L R}
-   {Browse R}
-end
