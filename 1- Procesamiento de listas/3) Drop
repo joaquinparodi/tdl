@@ -1,0 +1,15 @@
+fun {Drop Xs N}
+   if {Length Xs} < N then
+	    nil
+   else
+	    case Xs of H|T then
+	        if N == 0 then
+	          H|{Drop T N}
+	        else
+	          {Drop T N-1}
+	        end
+	    else
+	        nil
+	    end
+   end
+end
