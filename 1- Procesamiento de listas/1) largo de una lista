@@ -1,7 +1,0 @@
-fun {Length Xs}
-      case Xs of H|T then
-	 1 + {Length T}
-      else
-	 0
-      end
-   end
