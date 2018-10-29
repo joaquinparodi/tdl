@@ -1,0 +1,297 @@
+https://blog.kotlin-academy.com/kotlin-programmer-dictionary-function-type-vs-function-literal-vs-lambda-expression-vs-anonymous-edc97e8873e
+https://itnext.io/kotlin-basics-types-any-unit-and-nothing-674cc858035
+https://kotlinlang.org/docs/reference/lambdas.html#anonymous-functions
+https://kotlinlang.org/docs/reference/extensions.html
+https://kotlinexpertise.com/kotlin-byte-code-generation/
+https://blog.stylingandroid.com/kotlin-mutability/
+
+
+Any
+Object is the root of the class hierarchy in Java, every class has Object as a superclass. In Kotlin theAny type represents the super type of all non-nullable types.
+
+It differs to Java’s Object in 2 main things:
+
+In Java, primitives types aren’t type of the hierarchy and you need to box them implicitly, while in Kotlin Any is a super type of all types.
+Any can’t hold the null value, if you need null to be part of your variable you can use the type Any?
+
+Unit
+In Java if we want that a function does return nothing we use void, Unit is the equivalent in Kotlin.
+
+The main characteristics of Unit against Java’s void are:
+
+Unit is a type and therefore can be used as a type argument.
+Only one value of this type exists.
+It is returned implicitly. No need of a return statement.
+
+Nothing
+This type does not exist in Java. It is used when a function will never terminate normally and therefore a return value has no sense.
+
+It is very useful when analyzing this type of code, to know that the function will never terminate.
+
+An example of this kind of functions are the fail function in test systems, or the main loop in a game engine.
+
+EJEMPLOS DE KOTLIN CONF2018
+
+
+EXTENSIONS:
+Extensions are resolved statically
+Extensions do not actually modify classes they extend. By defining an extension, you do not insert new members into a class, but merely make new functions callable with the dot-notation on variables of this type.
+class C {
+    fun foo() { println("member") }
+}
+
+fun C.foo() { println("extension") }
+
+
+
+FUNCTIONS:
+
+Sometimes, the number of parameters is not known in advance. In such cases, we can add a
+vararg modifier to a parameter. It allows the function to accept any number of arguments.
+Here is an example, where the function is printing the sum of multiple integers:
+ fun printSum(vararg numbers: Int) {
+ val sum = numbers.sum()
+ print(sum)
+ }
+ printSum(1,2,3,4,5) // Prints: 15
+ printSum() // Prints: 0
+
+ One limitation with vararg usage is that there is only one vararg parameter allowed per
+function declaration.
+
+ When a function
+returns a single expression, then curly braces and the body of the function can be omitted.
+We specify the expression directly using the equality character. Functions defined this way
+are called single-expression functions.  we achieve high readability thanks to a single-expression
+function. Single expression functions are also very popular in the functional world. 
+
+ tail-recursive function supported by
+modern languages such as Kotlin. A tail-recursive function is a special kind of recursive
+function, where the function calls itself as the last operation it performs (in other words,
+recursion takes place in the last operation of a function). This allows us to optimize
+recursive calls by compiler and perform recursive operations in a more efficient way,
+without worrying about a potential StackOverflowError. To make a function tailrecursive,
+we need to mark it with a tailrec modifier:
+ tailrec fun getState(state: State, n: Int): State =
+ if (n <= 0) state
+ else getState(state.nextState(), n - 1)
+To check out how it works, let's compile this code and decompile it to Java. Here is what
+can be found then (code after simplification):
+ public static final State getState(@NotNull State state, int n)
+ {
+ while(true) {
+ if(n <= 0) {
+ return state;
+ }
+ state = state.nextState();
+ n = n - 1;
+ }
+ }
+
+
+A first-class citizen in a given programming language is a term that describes an entity that
+supports all the operations generally available to other entities. These operations typically
+include being passed as an argument, returned from a function, and assigned to a variable.
+The sentence a function is a first-class citizen in Kotlin should then be understood as: it is
+possible in Kotlin to pass functions as an argument, return them from functions, and assign them to
+variables. While Kotlin is a statically typed language, there needs to be a function type
+defined to allow these operations. In Kotlin, the notation used to define a function type is
+the following:
+ (types of parameters)->return type
+
+ Functions can not only be stored in variables, they can also be used as a generic. For
+example, we can keep functions in a list:
+ var todoList: List<() -> Unit> = // ...
+ for (task in todoList) task()
+The preceding list can store functions with the () -> Unit signature.
+
+Under the hood, function types are just a syntactic sugar for generic interfaces. Let's look at
+some examples:
+The ()->Unit signature is an interface for Function0<Unit>. The expression is
+Function0, because it has zero parameters, and Unit because it is the return
+type.
+The (Int)->Unit signature is interface for Function1<Int, Unit>. The
+expression is Function1 because it has one parameter.
+The ()->(Int, Int)->String signature is an interface for
+Function0<Function2<Int, Int, String>>.
+
+anonymous functions. They work
+the same way as normal functions, but they have no name between the fun keyword and
+the parameter declaration, so by default they are treated as objects.
+
+HIGH ORDER FUNCTIONS:
+A higher order function is a function that takes a function as an argument, or returns a function.
+A higher-order function is a function that takes at least one function as an argument, or
+returns a function as its result. It is fully supported in Kotlin, as functions are first-class
+citizens. Let's look at it in an example. Let's suppose that we need two functions: a function
+that will add all BigDecimal numbers from a list, and a function that will get the product
+(the result of multiplication between all the elements in this list) of all these numbers:
+ fun sum(numbers: List<BigDecimal>): BigDecimal {
+ 	var sum = BigDecimal.ZERO
+ 	for (num in numbers) {
+ 		sum += num
+ 	}
+ 	return sum
+ }
+ fun prod(numbers: List<BigDecimal>): BigDecimal {
+ 	var prod = BigDecimal.ONE
+ 	for (num in numbers) {
+ 		prod *= num
+ 	}
+ 	return prod
+ }
+
+ // Usage
+ val numbers = listOf(
+ 	BigDecimal.TEN,
+ 	BigDecimal.ONE,
+ 	BigDecimal.valueOf(2)
+ )
+ print(numbers) //[10, 1, 2]
+ println(prod(numbers)) // 20
+ println(sum(numbers)) // 13
+These are readable functions, but these functions are also nearly the same. The only
+difference is name, accumulator (BigDecimal.ZERO or BigDecimal.ONE), and operation.
+If we use the DRY (Don't Repeat Yourself) rule, then we shouldn't leave two pieces of
+similar code in the project. While it is easy to define a function that will have similar
+behavior and just differ in the objects used, it is harder to define a function that will differ in
+the operation performed (here, functions differ by the operation used to accumulate). The
+solution comes with the function type, because we can pass the operation as an argument.
+In this example, it is possible to extract the common method this way:
+
+ fun sum(numbers: List<BigDecimal>) =
+ fold(numbers, BigDecimal.ZERO) { acc, num -> acc + num }
+
+ fun prod(numbers: List<BigDecimal>) =
+ fold(numbers, BigDecimal.ONE) { acc, num -> acc * num }
+ 
+ private fun fold( numbers: List<BigDecimal>, start: BigDecimal, accumulator: (BigDecimal, BigDecimal) -> BigDecimal):BigDecimal {
+ var acc = start
+ for (num in numbers) {
+ acc = accumulator(acc, num)
+ }
+ return acc
+ }
+ // Usage
+ fun BD(i: Long) = BigDecimal.valueOf(i)
+ val numbers = listOf(BD(1), BD(2), BD(3), BD(4))
+ println(sum(numbers)) // Prints: 10
+ println(prod(numbers)) // Prints: 24
+The fold function iterates through numbers and updates acc using each element. Note that
+the function parameter is defined like any other type, and it can be used like any other
+function.
+
+The three most common cases when functions in arguments are used are:
+Providing operations to functions
+The Observer (Listener) pattern
+A callback after a threaded operation
+
+
+Lambda expressions:
+
+The simplest way to define anonymous functions in Kotlin is by using a feature called
+lambda expressions. They are similar to Java 8 lambda expressions, but the biggest
+difference is that Kotlin lambdas are actually closures, so they allow us to change variables
+from the creation context. This is not allowed in Java 8 lambdas. We will discuss this
+difference later in this section. Let's start with some simple examples. Lambda expressions
+in Kotlin have the following notation:
+ { arguments -> function body }
+Instead of return, the result of the last expression is returned. Here are some simple
+lambda expression examples:
+{ 1 }: A lambda expression that takes no arguments and returns 1. Its type is
+()->Int.
+{ s: String -> println(s) }: A lambda expression that takes one
+argument of type String, and prints it. It returns Unit. Its type is
+(String)->Unit.
+{ a: Int, b: Int -> a + b }: A lambda expression that takes two Int
+arguments and returns the sum of them. Its type is (Int, Int)->Int.
+
+While the returned value is taken from the last statement in lambda expressions, return is
+not allowed unless it has a return statement qualified by a label:
+ var a: (Int) -> Int = { i: Int -> return i * 2 }
+ // Error: Return is not allowed there
+ var l: (Int) -> Int = l@ { i: Int -> return@l i * 2 }
+
+ 
+This is the biggest difference between Kotlin and Java 8 lambda usage. Both Java
+anonymous objects and Java 8 lambda expressions allow us to use fields from the context,
+but Java does not allow us to assign different values to these variables 
+
+ Lambda expressions that enclose local variables and allow us to
+change them inside the function body are called closures. Kotlin fully supports closure
+definition. 
+
+We have to use labeled return to finish lambda expression earlier than in the last statement:
+
+val getMessage = lambda@ { response: Response ->
+    if(response.code !in 200..299) {
+        return@lambda "Error"
+    }
+    response.message
+}
+
+ANONYMOUS FUNCTIONS:
+
+One thing missing from the lambda expression syntax presented above is the ability to specify the return type of the function. In most cases, this is unnecessary because the return type can be inferred automatically. However, if you do need to specify it explicitly, you can use an alternative syntax: an anonymous function.
+
+fun(x: Int, y: Int): Int = x + y
+
+An anonymous function looks very much like a regular function declaration, except that its name is omitted. Its body can be either an expression (as shown above) or a block:
+
+
+fun(x: Int, y: Int): Int {
+    return x + y
+}
+
+The parameters and the return type are specified in the same way as for regular functions, except that the parameter types can be omitted if they can be inferred from context:
+
+
+ints.filter(fun(item) = item > 0)
+
+The return type inference for anonymous functions works just like for normal functions: the return type is inferred automatically for anonymous functions with an expression body and has to be specified explicitly (or is assumed to be Unit) for anonymous functions with a block body.
+
+One other difference between lambda expressions and anonymous functions is the behavior of non-local returns. A return statement without a label always returns from the function declared with the fun keyword. This means that a return inside a lambda expression will return from the enclosing function, whereas a return inside an anonymous function will return from the anonymous function itself.
+
+
+MUTABILITY:
+
+data class MyData(var value: String)
+...
+var mutable = MyData("Foo")
+val immutable = MyData("Bar")
+ 
+mutable = immutable    // This is fine
+immutable = mutable    // This will not compile because
+                       // immutable cannot be reassigned
+We can happily change mutable as much as we like, but we cannot reassign immutable with a different value. This may give the impression that we cannot change immutable, but that is actually not the case. While the variable itself is immutable, the instance of MyClass that it references is mutable:
+
+
+immutable.value = "Foo"    // This is fine
+immutable.value = "Foo"    // This is fine
+
+At first this feels a little counter intuitive, but it makes perfect sense when we consider what is actually going on. While the variable named immutable cannot be changed it references a data class which has a single field named value which can be changed because it is declared as a var.
+
+If we want to make the variable named immutable truly behave as an immutable object then we would need to change the implementation of MyClass itself to be immutable by making its property named value immutable by declaring it as a val:
+
+
+data class MyData(val value: String)
+data class MyData(val value: String)
+
+On the face of it this would appear to now break the mutability of the variable named mutable but this is not the case. While we can no longer directly alter the value property of the MyClass instance that it references, we can assign it with a new instance of MyClass which as a different value property:
+
+
+var mutable = MyData("Foo")
+
+mutable = MyData("Bar")    // This is fine
+var mutable = MyData("Foo")
+ 
+mutable = MyData("Bar")    // This is fine
+Of course there is the overhead of having to create a new object each time, but it does give us a much cleaner and safer mutability contract. It is for this reason that we should strive for immutability wherever possible because it is easier to relax an immutable object to a mutable one (through new instance creation) than it is to tighten a mutable object to be an immutable one.
+
+
+BYTECODE:
+
+As you might already know, the JVM is an abstract virtual computer running on various operating systems. In fact, the JVM is what makes Java “platform independent”, because it acts as an abstraction between the executed code and the OS.
+Just like any real computer, the JVM provides a defined set of instructions which can be used by a program and are translated to machine specific instructions by the JVM itself later on.
+
+“Kotlin produces Java compatible bytecode”, which means that the Kotlin compiler is capable of transforming all the nice features into JVM compatible instructions and this can even be observed using IntelliJ IDEA tools.
