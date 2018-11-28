@@ -1,0 +1,10 @@
+declare
+X={NewCell 0}				% Se crea una celda con valor 0 y se la asigna a X
+{Assign X 5}				% Se le asigna el valor 5 a la celda en X
+Y=X							% Y apunta o se liga con X
+{Assign Y 10}				% Como Y apunta a X, entonces se le asigna a la celda X el valor 10
+{Browse {Access X}==10}		% Imprime TRUE debido a que se cambió el valor en el paso anterior
+{Browse X==Y}				% Imprime TRUE ya que X e Y tienen la misma referencia
+Z={NewCell 10}				% Se crea una nueva celda con valor 10 y se la asigna a Z
+{Browse Z==Y}				% Imprime FALSE porque las referencias son distintas a pesar que 								  tengan el mismo valor numérico 
+{Browse @X==@Z}				% Imprime TRUE debido a que el contenido en ambas celdas es el 									  mismo e igual a 10 

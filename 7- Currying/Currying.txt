@@ -1,0 +1,27 @@
+CURRYING
+	
+	El currying, en programación, es una técncia que transforma una función que recibe más de un argumento a otra función que sólo recibe un agrumento y devuelve otra de un argumento, que a su vez esta última devuelve otra de un argumento, y así sucesivamente hasta que devuelva un valor. Dicho en otras palabras, a una función de x cantidad de argumentos se escribe en x funciones de un solo argumento todas anidadas.
+
+	Como la técnica de curry obliga a devolver funciones como valor de una función, es necesario y obligatorio que las funciones curry sean a high-order function.
+
+	Ejemplo:
+
+	fun{Add I}
+   		fun{$ J}
+   			I + J 
+   		end
+	end
+
+	{Browse {{Add 1} 2}} 
+
+	local
+		fun {Add I}
+      		fun {Adder J}
+         		J + I
+      		end
+   	in
+      	Adder
+  	end
+
+  	{Browse {{Add 1} 2}} 	%Imprime 3
+

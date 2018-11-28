@@ -1,0 +1,30 @@
+fun {Length Xs}
+	case Xs
+		of nil then 0
+		[] X|Xr then 1+{Length Xr}
+	end
+end
+
+
+proc {Length Xs ?len}
+	case Xs
+		of nill then 0
+		[] X|Xr then
+			local Z in 
+				{Length Xr Z}
+				len = Z + 1
+			end
+	end
+end
+
+proc {Length Xs acumm ?len}
+	case Xs 
+		of X|Xr then	
+			local Z in
+				Z = 1 + acumm
+				{Length Xr Z len}
+			end
+	else
+		len = acumm
+	end
+end
