@@ -1,0 +1,43 @@
+fun {FoldL L F U}
+    case L of nil then U
+    [] H|L2 then {FoldL L2 F {F U H}}
+    end
+end
+
+fun {FoldR L F U}
+    case L of nil then U
+    [] H|T then {F X {FoldR T F U}}
+    end
+end
+
+Ejemplo:
+
+local FoldL FoldR ProductList SumList List in
+	fun {FoldL L F U}
+    	case L of nil then U
+    	[] H|L2 then {FoldL L2 F {F U H}}
+    	end
+	end
+
+	fun {FoldR L F U}
+    	case L of nil then U
+    	[] H|T then {F X {FoldR T F U}}
+    	end
+	end
+
+	fun {ProductList X Y}
+    	X*Y
+	end
+
+	fun {SumList X Y}
+		X+Y
+	end
+
+	List = [1 2 3 4 5]
+	{Browse {FoldL L SumList 1}}
+    {Browse {FoldR L ProductList 1}}
+end
+
+
+% Otra manera {FoldL L fun {$ X Y} X+Y end 1}
+% Otra manera {FoldR L fun {$ X Y} X*Y end 1}
