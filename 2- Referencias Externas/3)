@@ -1,3 +1,0 @@
-proc {P X Y} local Z in {P Z Y} end end
-
-Respuesta: Z es local, Y es final -> local, dado que P se está utilizando (para realizar los llamados recursivos, se llama otro proceso P) podemos decir que es externa. 

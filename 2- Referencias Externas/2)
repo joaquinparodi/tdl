@@ -1,3 +1,0 @@
-proc {P X Y} local Z in {Q Z Y} end end
-
-Respuesta: Q es externa, Z es local, Y es final -> local.

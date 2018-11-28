@@ -1,0 +1,13 @@
+2.1) proc {P X Y} local Z in {Q Z U} end end
+
+	Respuesta: Q y U son externas, Z es local.
+
+2.2) proc {P X Y} local Z in {Q Z Y} end end
+
+	Respuesta: Q es externa, Z es local.
+
+2.3) proc {P X Y} local Z in {P Z Y} end end
+
+	Respuesta: Z es local. Dado que P se está utilizando (para realizar los llamados recursivos, se llama otro proceso P) podemos decir que es externa. 
+
+
