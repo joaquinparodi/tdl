@@ -1,1 +1,5 @@
+proc {P X Y} local Z in {Q Z U} end end
+
+Respuesta: Q y U son externas, Z es local.
+
 

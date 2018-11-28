@@ -1,0 +1,25 @@
+local Test in
+	proc {Test X}
+		case X
+		of a|Z then {Browse 'case'(1)}
+		[] f(a) then {Browse 'case'(2)}
+		[] Y|Z andthen Y==Z then {Browse 'case'(3)}
+		[] Y|Z then {Browse 'case'(4)}
+		[] f(Y) then {Browse 'case'(5)}
+		else {Browse 'case'(6)} end
+	end
+	{Test [b c a]}			% Case 4		Debido a que la primera letra es distinto de a (H != a) y el tail es distinto al 											Head cae en el cuarto caso .	
+	{Test f(b(3))}			% Case 5		Como f() es una función e Y no sabemos que es, esto quiere decir que puede ser una 											función o un valor. En este caso Y es otra función (b(3)) se cumple el case 5.
+	{Test f(a)}				% Case 2		Cumple tal cual el caso 2.
+	{Test f(a(3))}			% Case 5		Como f() es una función e Y no sabemos que es, esto quiere decir que puede ser una 											función o un valor. En este caso Y es otra función (a(3)) se cumple el case 5.
+	{Test f(d)}				% Case 5		Como f() es una función e Y no sabemos que es, esto quiere decir que puede ser una 											función o un valor. En este caso Y es una constante (d) se cumple el case 5.
+	{Test [a b c]}			% Case 1		La primer letra es igual a "a" y el resto (Z) es distinto de "a",se cumple el caso 1.
+	{Test [c a b]}			% Case 4		Debido a que la primera letra es distinto de a (H != a) y el tail es distinto al 											Head cae en el cuarto caso .
+	{Test a|a}				% Case 1		La primer letra es igual a "a" y el resto (Z) es distinto de "a", se cumple el caso 										1. No cae en el caso 3, ya que matchea con el caso 1 antes de hacerlo con el 3.
+	{Test '|'(v b)}			% Case 4		Debido a que la primera letra es distinto de a (H != a) y el tail es distinto al 											Head cae en el cuarto caso.
+	{Test '|'(a a)}			% Case 1		La primer letra es igual a "a" y el resto (Z) es distinto de "a", se cumple el caso 										1. No cae en el caso 3, ya que matchea con el caso 1 antes de hacerlo con el 3.
+	{Test '|'(b b)}			% Case 3		Al ser el primer elemento igual al seegundo, imprime el caso 3.
+	{Test '|'(a b c)}		% Case 6		Como no coincide en ningun caso, matchea con el ultimo.
+	{Test '|'(a[b c])}		% Case 1		El header = a y lo que le sigue es [b c], por este motivo se corresponde con el 											primer caso.
+
+end
