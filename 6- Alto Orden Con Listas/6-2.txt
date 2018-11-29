@@ -1,0 +1,17 @@
+%Funcion Map
+
+fun {Map Xs F}
+    case Xs of nil then nil
+    [] X|Xr then {F X}|{Map Xr F}
+    end
+end
+
+
+Ejemplo de uso:
+Suma 10 a cada elemento de la lista
+
+local
+  fun {AddTen X} X + 10 end
+in
+  {Browse {Map [1 2 3 4 5 6] AddTen}}
+end

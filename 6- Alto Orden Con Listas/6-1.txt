@@ -1,8 +1,12 @@
+%Funcion FoldL
+
 fun {FoldL L F U}
     case L of nil then U
     [] H|L2 then {FoldL L2 F {F U H}}
     end
 end
+
+%Funcion FoldR
 
 fun {FoldR L F U}
     case L of nil then U
@@ -10,7 +14,9 @@ fun {FoldR L F U}
     end
 end
 
-Ejemplo:
+Ejemplo de uso:
+Suma o realiza el producto de los elementos de una lista
+
 
 local FoldL FoldR ProductList SumList List in
 	fun {FoldL L F U}
