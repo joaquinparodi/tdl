@@ -1,0 +1,30 @@
+   fun {Filtro Xs F}
+      case Xs
+      of X|nil then
+	 if {F X} then
+	    X|nil
+	 else
+	    nil
+	 end
+	 
+	 [] X|Xr then
+	    local Y in
+	       Y = {Filtro Xr F}
+	       if {F X} then
+		  X|Y
+	       else
+		  Y
+	       end
+	    end
+	    
+	  end
+    end
+
+Ejemplo de uso:
+Obtener los numeros pares de una lista
+
+local List in
+    List = {Filter [1 2 3 4 5 6 7 8 9] IsEven}
+    {Browse List}
+end
+
