@@ -1,0 +1,28 @@
+declare fun {NewFilterAgent FilterProc Port}
+	   Agent
+	in
+	   thread
+	      for Message in Agent do
+		 if {FilterProc Message} then
+		    {Send Port Message}
+		 else
+		    skip
+		 end
+	      end
+	   end
+	   {NewPort Agent}
+	end
+	
+declare fun {Filter Msg}
+	      if ({OS.rand} < {OS.rand}) then
+		      true
+	      else
+		      false
+	      end
+	end
+
+declare Stream MyPort = {NewPort Stream}
+MiAgente = {NewFilterAgent Filter MyPort}
+{Send MiAgente 2}
+{Send MiAgente "Probando"}
+{Browse Stream}
