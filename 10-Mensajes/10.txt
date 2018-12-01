@@ -1,0 +1,20 @@
+declare fun {NewAgent Proc}
+	   Agent
+	in
+	   thread
+	      for Message in Agent do
+		 {Proc Message}
+	      end
+	   end
+	   {NewPort Agent}
+	end
+
+declare proc {Printer Msg}
+	   {Browse Msg}
+	end
+
+declare
+NuevoAgente= {NewAgent Printer}
+
+{Send NuevoAgente ‘Mensaje Recibido’}
+{Send NuevoAgente 200}
