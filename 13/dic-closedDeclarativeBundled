@@ -1,0 +1,74 @@
+/* Diccionario cerrado-sin estado-empaquetado 
+Metodos: 
+  S =  {NewDicc}
+  {S.put K V}
+  {S.get K}
+  {S.equals K}
+*/
+
+local Dictionary NewDicc S S2 S3 in
+  fun {Dictionary Dict}
+   local
+      fun {Put Key Value} 
+        if Dict == nil then
+          {Dictionary abb(Key Value nil nil)}
+        else
+          local abb(K V Left Right) = Dict LD RD in
+            if K == Key then
+              {Dictionary abb(Key Value Left Right)}
+            elseif Key < K then
+              LD = {Dictionary Left}
+              {Dictionary abb(K V {LD.put Key Value} Right)}
+            else
+              RD = {Dictionary Right}
+              {Dictionary abb(K V Left {RD.put Key Value})}
+            end
+          end
+        end
+      end
+
+      fun {Get Key} 
+        if Dict == nil then
+          nil
+        else
+          local abb(K V Left Right) = Dict LD RD in
+              if K == Key then
+                V
+              elseif Key < K then
+                LD = {Dictionary Left}
+                {Dictionary.get Key}
+              else
+                RD = {Dictionary Right}
+                {Dictionary.get Key}
+              end
+          end
+	      end
+      end
+
+     fun {EqualsPriv Abb}
+    	 if Dict == nil andthen Abb == nil then
+	        true
+    	 elseif {Or Dict == nil Abb  == nil} then
+	        false
+    	 else
+	        local abb(K V Left Right) = Dict abb(K2 V2 Left2 Right2) = Abb LD RD in
+            if V == V2 then
+      		    LD = {Dictionary Left}
+        		  RD = {Dictionary Right}
+	  	        {LD.equals {Dictionary Left2}} andthen {RD.equals {Dictionary Right2}}
+            else
+		          false
+	          end
+  	      end
+	      end
+      end
+
+      fun {Equals Dict2}
+	      {Dict2.equalsPriv Dict}
+      end
+   in
+      dictionary(get:Get put:Put equals:Equals equalsPriv: EqualsPriv )
+   end
+  end
+  fun {NewDicc} {Dictionary nil} end
+end
