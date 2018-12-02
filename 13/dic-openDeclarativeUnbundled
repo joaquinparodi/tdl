@@ -1,0 +1,67 @@
+/* Diccionario abierto-sin estado-desempaquetado 
+Metodos: 
+  {Dictionary.new}
+  {Dictionary.get}
+  {Dictionary.put}
+  {Dictionary.equals}
+*/
+
+local Dictionary in
+
+   local
+      fun {NewDicc} nil end
+
+      fun {Put Dict Key Value} 
+	if Dict == nil then
+	   abb(Key Value nil nil)
+	else
+	   local abb(K V Left Right) = Dict in
+	      if K == Key then
+		 abb(Key Value Left Right)
+	      elseif Key < K then
+		 abb(K V {Put Left Key Value} Right)
+	      else
+		 abb(K V Left {Put Right Key Value})
+	      end
+	   end
+	end
+      end
+
+
+      fun {Get Dict Key} 
+	if Dict == nil then
+	   nil
+	else
+	   local abb(K V Left Right) = Dict in
+	      if K == Key then
+		 V
+	      elseif Key < K then
+		 {Get Left Key}
+	      else
+		 {Get Right Key}
+	      end
+	   end
+	end
+      end
+
+      fun {Equals Dict Dict2}
+	 if Dict == nil andthen Dict2 == nil then
+	    true
+	 elseif {Or Dict == nil Dict2 == nil} then
+	    false
+	 else
+	    local abb(K V Left Right) = Dict abb(K2 V2 Left2 Right2) = Dict2 in
+	       if V == V2 then
+		  {Equals Left Left2} andthen {Equals Right Right2} 
+	       else
+		  false
+	       end
+	    end
+	 end
+      end
+	 
+   in
+      Dictionary=dictionary(new:NewDicc get:Get put:Put equals:Equals)
+   end
+   
+end
