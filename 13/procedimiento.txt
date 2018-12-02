@@ -1,0 +1,121 @@
+/* Se implementa el procedimiento pedido por el enunciado utilizando el diccionario abierto-sin estado-desempaquetado */
+
+local Dictionary S S2 W W2 SonAnagramas in
+
+   local
+      fun {NewDicc} nil end
+
+      fun {Put Dict Key Value} 
+	if Dict == nil then
+	   abb(Key Value nil nil)
+	else
+	   local abb(K V Left Right) = Dict in
+	      if K == Key then
+		 abb(Key Value Left Right)
+	      elseif Key < K then
+		 abb(K V {Put Left Key Value} Right)
+	      else
+		 abb(K V Left {Put Right Key Value})
+	      end
+	   end
+	end
+      end
+
+
+      fun {Get Dict Key} 
+	if Dict == nil then
+	   nil
+	else
+	   local abb(K V Left Right) = Dict in
+	      if K == Key then
+		 V
+	      elseif Key < K then
+		 {Get Left Key}
+	      else
+		 {Get Right Key}
+	      end
+	   end
+	end
+      end
+
+      fun {Equals Dict Dict2}
+	 if Dict == nil andthen Dict2 == nil then
+	    true
+	 elseif {Or Dict == nil Dict2 == nil} then
+	    false
+	 else
+	    local abb(K V Left Right) = Dict abb(K2 V2 Left2 Right2) = Dict2 in
+	       if V == V2 then
+		  {Equals Left Left2} andthen {Equals Right Right2} 
+	       else
+		  false
+	       end
+	    end
+	 end
+      end
+	 
+   in
+      Dictionary=dictionary(new:NewDicc get:Get put:Put equals:Equals)
+   end
+
+
+
+   fun {SonAnagramas Str1 Str2 }
+      local Store MergeX SplitX MergeSortX Dic1 Dic2 in
+	  fun {Store List Dict}
+	    case List of H|T then
+	       local Val in
+		  if {Dictionary.get Dict H} == nil then
+		     Val = 1
+		  else
+		     Val = {Dictionary.get Dict H} + 1
+		  end
+		  {Store T {Dictionary.put Dict H Val}}	 
+	       end
+	    else
+	       Dict
+	    end
+	  end
+	  fun {MergeX L1 L2}
+	     case L1#L2 of
+		nil#L2 then L2
+	     [] L1#nil then L1
+	     [] (X|Xr)# (Y|Yr) then
+		if X<Y then X|{MergeX Xr L2}
+		else
+		   Y|{MergeX L1 Yr}
+		end
+	     end
+	  end
+	  proc {SplitX L R1 R2}   
+	     case L of X|Y|Ls then
+		local Xs Ys in
+		   R1 = X|Xs
+		   R2 = Y|Ys
+		   {SplitX Ls Xs Ys}
+		end
+	     [] X then R1=L R2=nil
+	     [] nil then R1=nil R2=nil
+	     end
+	  end
+	  fun {MergeSortX L}
+	     case L of nil then nil
+	     [] [X] then L
+	     else
+		local Xs Ys in
+		   {SplitX L Xs Ys}
+		   {MergeX {MergeSortX Xs} {MergeSortX Ys}}
+		end
+	     end
+	  end
+  	
+	  Dic1 = {Store {MergeSortX Str1} {Dictionary.new}}  
+	  Dic2 = {Store {MergeSortX Str2} {Dictionary.new}}
+
+	  {Dictionary.equals Dic1 Dic2}
+      end
+   end
+   
+   {Browse "Son Anagramas SAD1234 y DAS321"#{SonAnagramas "SAD1234" "DAS3214"}}
+   
+end
