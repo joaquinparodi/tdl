@@ -1,0 +1,65 @@
+/* Diccionario cerrado-sin estado-desempaquetado 
+Metodos: 
+  {Dictionary.new}
+  {Dictionary.get}
+  {Dictionary.put}
+  {Dictionary.equals}
+*/
+
+local Dictionary Wrap Unwrap in
+   local
+      fun {NewDicc} {Wrap nil} end
+
+      fun {Put Dict Key Value} 
+        if {Unwrap Dict} == nil then
+          {Wrap abb(Key Value nil nil)}
+        else
+          local abb(K V Left Right) = {Unwrap Dict} in
+            if K == Key then
+              {Wrap abb(Key Value Left Right)}
+            elseif Key < K then
+              {Wrap abb(K V {Put Left Key Value} Right)}
+            else
+              {Wrap abb(K V Left {Put Right Key Value})}
+            end
+          end
+        end
+      end
+
+      fun {Get Dict Key} 
+        if {Unwrap Dict} == nil then
+          nil
+        else
+          local abb(K V Left Right) = {Unwrap Dict} in
+              if K == Key then
+                V
+              elseif Key < K then
+                {Get {Wrap Left} Key}
+              else
+                {Get {Wrap Right} Key}
+              end
+          end
+	      end
+      end
+
+      fun {Equals Dict Dict2}
+	      if {Unwrap Dict} == nil andthen {Unwrap Dict2} == nil then
+	        true
+	      elseif {Or {Unwrap Dict} == nil {Unwrap Dict2} == nil} then
+	        false
+	      else
+	        local abb(K V Left Right) = {Unwrap Dict} abb(K2 V2 Left2 Right2) = {Unwrap Dict2} in
+            if V == V2 then
+		          {Equals {Wrap Left} {Wrap Left2}} andthen {Equals {Wrap Right} {Wrap Right2}}
+	          else
+		          false
+	          end
+	        end
+	      end
+      end
+	 
+   in
+      Dictionary=dictionary(new:NewDicc get:Get put:Put equals:Equals)
+   end
+   
+end
