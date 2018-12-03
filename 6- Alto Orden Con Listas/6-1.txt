@@ -17,7 +17,6 @@ end
 Ejemplo de uso:
 Suma o realiza el producto de los elementos de una lista
 
-
 local FoldL FoldR ProductList SumList List in
 	fun {FoldL L F U}
     	case L of nil then U
@@ -35,12 +34,9 @@ local FoldL FoldR ProductList SumList List in
     	X*Y
 	end
 
-	fun {SumList X Y}
-		X+Y
-	end
 
 	List = [1 2 3 4 5]
-	{Browse {FoldL L SumList 1}}
+	{Browse {FoldL L ProductList 1}}
     {Browse {FoldR L ProductList 1}}
 end
 

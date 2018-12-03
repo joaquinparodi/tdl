@@ -17,6 +17,9 @@ proc {Length Xs ?len}
 	end
 end
 
+
+%TAIL RECURSIVE
+
 proc {Length Xs acumm ?len}
 	case Xs 
 		of X|Xr then	
@@ -28,3 +31,10 @@ proc {Length Xs acumm ?len}
 		len = acumm
 	end
 end
+
+%Las ventajas que tiene utilizar el tail recursive se basa en poseer un stack final más bajo.
+%Esto se debe a que el garbage collector libera la memoria antes ya que primero se realizan los cálculos
+% y luego la llamada a la recursión.
+
+
+
