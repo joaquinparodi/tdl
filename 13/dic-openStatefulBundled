@@ -1,0 +1,71 @@
+/* Diccionario abierto-con estado-empaquetado 
+Metodos: 
+  S =  {NewDicc}
+  {S.put K V}
+  {S.get K}
+  {S.equals K}
+*/
+
+declare Dicc
+local NewDicc in
+    fun {NewDicc dict}
+        Dicc = {NewCell dict}
+        fun{Put Key Value}
+      		if @Dicc == nil then
+      			Dicc:= abb(Key Value nil nil)
+      		else
+      			local abb(K V Left Right) = @Dicc in
+            		if K == Key then
+              			Dicc:= abb(Key Value Left Right)
+            		elseif Key < K then
+            			Dicc:= abb(K V {{NewDicc Left}.put Key Value} Right)
+            		else
+              			Dicc:= abb(K V Left {{NewDicc Right}.put Key Value})
+            		end
+          		end
+        	end
+      	end
+
+      	fun {Get Key}
+      		if @Dicc == nil then 
+      			nil
+      		else
+      			local abb(K V Left Right) = @Dicc in
+      				if K == Key then
+      					V
+      				elseif Key < K then
+      					{{NewDicc Left}.get Key}
+      				else
+      					{{NewDicc Right}.get Key}
+      				end
+      			end
+      		end
+      	end
+
+      	fun {Equals Dicc Dicc2}
+      		if Dicc == nil andthen Dicc2 == nil then 
+      			true
+      		elseif {Or Dicc == nil Dicc2 == nil} then
+      			false
+      		elseif 	@Dicc == nil andthen @Dicc2 == nil then
+      			true
+      		elseif {Or @Dicc == nil @Dicc2 == nil} then
+      			false
+      		else
+      			local abb(K V Left Right) = @Dicc abb(K2 V2 Left2 Right2) = @Dicc2 in
+      				if K == K2 then
+      					if V == V2 then
+      						{Equals Left Left2} andthen {Equals Right Right2} 
+      					else
+      						false
+      					end
+      				else 
+      					false
+      				end
+      			end
+      		end
+      	end
+   in
+      dictionary(get:Get put:Put equals:Equals data: Dict)
+   end
+  
