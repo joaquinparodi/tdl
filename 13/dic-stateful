@@ -1,0 +1,53 @@
+fun {NewDicc}
+   C = {NewCell nil}
+end
+
+proc {Put Key Value}
+   case @C of nil then c := abb(Key Value {NewDicc} {NewDicc})
+   [] abb(K V Left Right) then
+      if(Key > K) then
+	 {R.put Key Value}
+      else
+	 {L.put Key Value}
+      end
+   end
+end
+
+fun {Get Key}
+   case @C of nil then nil
+   [] tree(K Value _ _) andthen Key == K then Value
+   [] tree(K _ L _) andthen Key < K then
+      {L.get Key}
+   [] tree(K _ _ R) andthen Key > K then
+      {R.get Key}
+   end
+end
+
+fun {Keys}
+   case @C of nil then nil
+   [] tree(Key Value Left Right) then
+      Key|Left.keys|Right.keys
+   else
+      nil
+   end
+end
+fun {Values}
+   case @C of nil then nil
+   [] tree(Key Value Left Right) then
+      Value|Left.values|Right.values
+   else
+      nil
+   end
+end
+
+fun {Equals D2}
+   if ({Sort D1.keys} = {Sort D2.keys}) then
+      if({Sort D1.values} = {Sort D2.values}) then %FALTA IMPLEMENTAR%
+	 true
+      else
+	 false
+      end
+   else
+      false
+   end
+end
