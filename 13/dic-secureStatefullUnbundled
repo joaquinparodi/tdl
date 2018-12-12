@@ -1,0 +1,74 @@
+/* Diccionario abierto-con estado-empaquetado
+Metodos: 
+  S =  {NewDicc}
+  {Dictionary.put S K V}
+  {Dictionary.get S K}
+  {Dictionary.equals S S2}
+*/
+
+
+local Dictionary NewDicc Wrap Unwrap in
+   local
+      fun {Wrap Dict} Dict end
+      fun {Unwrap Dict} Dict end
+      proc {Put Dict Key Value}
+	 fun {PutD Ds Key Value}
+	    if Ds == nil then
+	        abb(Key Value nil nil)
+	    else
+	       local abb(K V Left Right) = Ds in
+		  if K == Key then
+		     abb(Key Value Left Right)
+		  elseif Key < K then
+		     abb(K V {PutD Left Key Value} Right)
+		  else
+		     abb(K V Left {PutD Right Key Value})
+		  end
+	       end
+	    end
+          end
+      in
+        Dict:={Wrap {PutD {Unwrap @Dict} Key Value}}
+      end
+
+      fun {Get Dict Key}
+        fun {GetD Ds Key}
+          local abb(K V Left Right) = Ds in
+            if K == Key then
+              V
+            elseif Key < K then
+              {GetD Left Key}
+            else
+              {GetD Right Key}
+            end
+          end
+        end
+      in
+        {GetD {Unwrap @Dict} Key}
+      end
+      
+      fun {Equals Dict1 Dict2}
+        fun {EqualsD Dic Dic2}
+          if Dic == nil andthen Dic2 == nil then
+            true
+          elseif {Or Dic2 == nil Dic2 == nil} then
+            false
+          else
+            local abb(K V Left Right) = Dic abb(K2 V2 Left2 Right2) = Dic2 in
+              if V == V2 then
+                {EqualsD Left Left2} andthen {EqualsD Right Right2} 
+              else
+                false
+              end
+            end
+          end
+        end
+      in
+        {EqualsD {Unwrap @Dict1} {Unwrap @Dict2}}
+      end
+   in
+      Dictionary = dictionary(get:Get put:Put equals:Equals)
+   end
+  fun {NewDicc} {NewCell nil} end
+
+end
